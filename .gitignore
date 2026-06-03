@@ -1,0 +1,7 @@
+node_modules/
+.yarn/install-state.gz
+package-lock.json
+.env
+.env.local
+.github/copilot-instructions.md
+.github/instructions/
