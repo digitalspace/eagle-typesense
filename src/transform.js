@@ -253,7 +253,7 @@ function transformDocumentChunk(doc, listLookup, projectLookup, _pcpLookup, docu
     ...(toTimestamp(doc.datePosted) !== undefined && { datePosted: toTimestamp(doc.datePosted) }),
     ...(str(doc.documentName)        && { documentName:  str(doc.documentName) }),
     ...(projectName                  && { projectName }),
-    // Chunks inherit roles from parent document (doc.read stored by content-extract.js)
+    // Chunks inherit roles from parent document (doc.read stored by eagle-demi extract worker)
     allowed_roles: extractRoles(doc),
   };
 }

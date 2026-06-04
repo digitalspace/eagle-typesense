@@ -23,7 +23,6 @@ eagle-public/admin ──HTTP──▶ eagle-api (typesenseProxy.js)
 | **Change Stream listener** | Real-time sync from MongoDB → Typesense (`src/index.js`) |
 | **Full sync CronJob** | Nightly zero-downtime re-index (`src/full-sync.js`) |
 | **Popularity sync** | Nightly score update from penguin-analytics (`src/popularity-sync.js`) |
-| **Content extraction** | PDF text extraction + chunking (`src/content-extract.js`) |
 
 ## Collections
 
