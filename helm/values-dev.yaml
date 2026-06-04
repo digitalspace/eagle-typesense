@@ -5,6 +5,7 @@ sync:
 reindex:
   image:
     tag: dev
+  minFreeDiskGiB: 5   # PVC is 10 GiB; prod default (20) would always fail here
 
 typesense:
   resources:

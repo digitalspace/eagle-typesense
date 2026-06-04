@@ -58,6 +58,10 @@ spec:
                   key: TYPESENSE_API_KEY
             - name: NODE_OPTIONS
               value: "--max-old-space-size=512"
+            {{- if .Values.reindex.minFreeDiskGiB }}
+            - name: TYPESENSE_MIN_FREE_GIB
+              value: {{ .Values.reindex.minFreeDiskGiB | quote }}
+            {{- end }}
             resources:
               {{- toYaml .Values.reindex.resources | nindent 14 }}
 {{- end }}
