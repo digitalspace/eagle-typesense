@@ -2,6 +2,10 @@
 # Override in values-{env}.yaml for environment-specific settings.
 # Tear down everything: helm uninstall typesense -n <namespace>
 
+# Override the generated resource names (release-chart = typesense-typesense).
+# Set to eagle-typesense so all k8s objects use a consistent, predictable name.
+fullnameOverride: eagle-typesense
+
 # ---------------------------------------------------------------------------
 # Typesense server
 # ---------------------------------------------------------------------------
