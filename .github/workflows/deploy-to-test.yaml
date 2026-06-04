@@ -26,7 +26,7 @@ env:
   OPENSHIFT_NAMESPACE_TOOLS: 6cdc9e-tools
   OPENSHIFT_NAMESPACE_TEST: 6cdc9e-test
   IMAGE_NAME: typesense-sync
-  HELM_RELEASE: typesense
+  HELM_RELEASE: eagle-typesense
 
 jobs:
   deploy:
@@ -66,14 +66,14 @@ jobs:
 
       - name: Restart sync deployment
         run: |
-          if oc get deployment typesense-typesense-sync -n ${{ env.OPENSHIFT_NAMESPACE_TEST }} &>/dev/null; then
-            oc rollout restart deployment/typesense-typesense-sync -n ${{ env.OPENSHIFT_NAMESPACE_TEST }}
-            oc rollout status deployment/typesense-typesense-sync -n ${{ env.OPENSHIFT_NAMESPACE_TEST }} --timeout=3m
+          if oc get deployment eagle-typesense-sync -n ${{ env.OPENSHIFT_NAMESPACE_TEST }} &>/dev/null; then
+            oc rollout restart deployment/eagle-typesense-sync -n ${{ env.OPENSHIFT_NAMESPACE_TEST }}
+            oc rollout status deployment/eagle-typesense-sync -n ${{ env.OPENSHIFT_NAMESPACE_TEST }} --timeout=3m
             echo "✓ Sync deployment restarted"
           fi
 
       - name: Verify deployment
         run: |
-          oc rollout status deployment/typesense-typesense -n ${{ env.OPENSHIFT_NAMESPACE_TEST }} --timeout=5m
+          oc rollout status deployment/eagle-typesense -n ${{ env.OPENSHIFT_NAMESPACE_TEST }} --timeout=5m
           echo "✓ Typesense server healthy"
           oc get pods -n ${{ env.OPENSHIFT_NAMESPACE_TEST }} -l app.kubernetes.io/instance=typesense

@@ -28,7 +28,7 @@ env:
   OPENSHIFT_NAMESPACE_TOOLS: 6cdc9e-tools
   OPENSHIFT_NAMESPACE_DEV: 6cdc9e-dev
   IMAGE_NAME: typesense-sync
-  HELM_RELEASE: typesense
+  HELM_RELEASE: eagle-typesense
 
 jobs:
   build-and-push:
@@ -122,18 +122,18 @@ jobs:
       - name: Restart sync deployment
         run: |
           echo "Restarting typesense-sync deployment to pick up new image..."
-          if oc get deployment typesense-typesense-sync -n ${{ env.OPENSHIFT_NAMESPACE_DEV }} &>/dev/null; then
-            oc rollout restart deployment/typesense-typesense-sync -n ${{ env.OPENSHIFT_NAMESPACE_DEV }}
-            oc rollout status deployment/typesense-typesense-sync -n ${{ env.OPENSHIFT_NAMESPACE_DEV }} --timeout=3m
+          if oc get deployment eagle-typesense-sync -n ${{ env.OPENSHIFT_NAMESPACE_DEV }} &>/dev/null; then
+            oc rollout restart deployment/eagle-typesense-sync -n ${{ env.OPENSHIFT_NAMESPACE_DEV }}
+            oc rollout status deployment/eagle-typesense-sync -n ${{ env.OPENSHIFT_NAMESPACE_DEV }} --timeout=3m
             echo "✓ Sync deployment restarted"
           else
-            echo "⚠ typesense-sync deployment not found — first deploy may need manual start"
+            echo "⚠ eagle-typesense-sync deployment not found — first deploy may need manual start"
           fi
 
       - name: Verify deployment
         run: |
           echo "Verifying Typesense server..."
-          oc rollout status deployment/typesense-typesense -n ${{ env.OPENSHIFT_NAMESPACE_DEV }} --timeout=5m
+          oc rollout status deployment/eagle-typesense -n ${{ env.OPENSHIFT_NAMESPACE_DEV }} --timeout=5m
           echo "✓ Typesense server healthy"
 
           echo ""
