@@ -228,8 +228,8 @@ function transformProjectNotification(doc, listLookup) {
 }
 
 function transformDocumentChunk(doc, listLookup, projectLookup, _pcpLookup, documentLookup) {
-  const documentId = doc.documentId ? doc.documentId.toString() : undefined;
-  const projectId  = doc.projectId  ? doc.projectId.toString()  : undefined;
+  const documentId = (doc.documentId || doc.document) ? (doc.documentId || doc.document).toString() : undefined;
+  const projectId  = (doc.projectId || doc.project)  ? (doc.projectId || doc.project).toString()  : undefined;
 
   if (!documentId || !str(doc.content)) return null;
 
