@@ -10,6 +10,7 @@ fullnameOverride: eagle-typesense
 # Typesense server
 # ---------------------------------------------------------------------------
 typesense:
+  replicas: 1
   image:
     repository: typesense/typesense
     tag: "30.1"

@@ -1,13 +1,13 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "typesense.fullname" . }}
   labels:
     {{- include "typesense.labels" . | nindent 4 }}
 spec:
-  replicas: 1
-  strategy:
-    type: Recreate    # Single replica, stateful — must stop old before starting new
+  serviceName: {{ include "typesense.fullname" . }}-headless
+  podManagementPolicy: Parallel
+  replicas: {{ .Values.typesense.replicas | default 1 }}
   selector:
     matchLabels:
       {{- include "typesense.selectorLabels" . | nindent 6 }}
@@ -27,9 +27,15 @@ spec:
           - --enable-cors
           - --memory-used-max-percentage={{ .Values.typesense.memoryUsedMaxPercentage }}
           - --disk-used-max-percentage={{ .Values.typesense.diskUsedMaxPercentage }}
+          - --peering-port=8107
+          - --peering-address=$(POD_IP)
+          - --nodes=/etc/typesense/nodes
         ports:
         - name: http
           containerPort: {{ .Values.typesense.port }}
+          protocol: TCP
+        - name: peering
+          containerPort: 8107
           protocol: TCP
         env:
         - name: TYPESENSE_API_KEY
@@ -37,9 +43,16 @@ spec:
             secretKeyRef:
               name: {{ .Values.typesense.existingSecret }}
               key: TYPESENSE_API_KEY
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         volumeMounts:
         - name: data
           mountPath: {{ .Values.typesense.persistence.mountPath }}
+        - name: nodes-config
+          mountPath: /etc/typesense
+          readOnly: true
         livenessProbe:
           httpGet:
             path: /health
@@ -67,6 +80,16 @@ spec:
         resources:
           {{- toYaml .Values.typesense.resources | nindent 10 }}
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: {{ include "typesense.fullname" . }}-data
+      - name: nodes-config
+        configMap:
+          name: {{ include "typesense.fullname" . }}-nodes
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: {{ .Values.typesense.persistence.storageClass }}
+      resources:
+        requests:
+          storage: {{ .Values.typesense.persistence.size }}

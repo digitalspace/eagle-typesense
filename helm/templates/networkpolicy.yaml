@@ -1,4 +1,5 @@
 # Allow eagle-api pods, sync service, and rproxy to query Typesense on port 8108.
+# Also allow typesense pods to communicate with each other on peering port 8107 and api port 8108.
 # eagle-api uses role: api-eagle-epic; rproxy uses role: rproxy-eagle-epic.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -13,6 +14,7 @@ spec:
   policyTypes:
     - Ingress
   ingress:
+    # Client queries
     - from:
         # eagle-api pods (for search queries)
         - podSelector:
@@ -23,5 +25,15 @@ spec:
             matchLabels:
               role: rproxy-eagle-epic
       ports:
+        - port: {{ .Values.typesense.port }}
+          protocol: TCP
+    # Typesense cluster internal peering
+    - from:
+        - podSelector:
+            matchLabels:
+              role: search-typesense-eagle
+      ports:
+        - port: 8107
+          protocol: TCP
         - port: {{ .Values.typesense.port }}
           protocol: TCP
