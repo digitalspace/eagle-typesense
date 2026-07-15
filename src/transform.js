@@ -34,6 +34,19 @@ function parseCentroid(c) {
   return { centroid: [lng, lat] };
 }
 
+/**
+ * Parse a [lng, lat] centroid pair and swap to [lat, lng] for Typesense-native geopoint queries.
+ * Validates that coordinates are within BC bounds before accepting.
+ * Returns { locationPoint: [lat, lng] } or {} if invalid.
+ */
+function parseLocationPoint(c) {
+  if (!Array.isArray(c) || c.length < 2) return {};
+  const lng = parseFloat(c[0]);
+  const lat = parseFloat(c[1]);
+  if (isNaN(lng) || isNaN(lat) || lat < 48 || lat > 60 || lng < -139 || lng > -114) return {};
+  return { locationPoint: [lat, lng] };
+}
+
 const OBJECT_ID_RE = /^[0-9a-f]{24}$/i;
 
 /**
@@ -140,6 +153,10 @@ function transformProject(doc, listLookup) {
     ...(toTimestamp(leg.dateUpdated)    !== undefined && { updatedDate:   toTimestamp(leg.dateUpdated) }),
     ...(toTimestamp(leg.decisionDate)  !== undefined && { decisionDate:  toTimestamp(leg.decisionDate) }),
     ...parseCentroid(leg.centroid),
+    ...parseLocationPoint(leg.centroid),
+    ...(str(doc.regionalDistrict || leg.regionalDistrict)  && { regionalDistrict:  str(doc.regionalDistrict || leg.regionalDistrict) }),
+    ...(str(doc.electoralDistrict || leg.electoralDistrict) && { electoralDistrict: str(doc.electoralDistrict || leg.electoralDistrict) }),
+    ...(str(doc.municipality || leg.municipality)      && { municipality:      str(doc.municipality || leg.municipality) }),
     popularity:   0,  // default; overwritten nightly by popularity-sync.js
     allowed_roles: extractRoles(doc),
   };
