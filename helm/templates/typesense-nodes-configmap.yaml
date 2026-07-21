@@ -6,8 +6,8 @@ metadata:
     {{- include "typesense.labels" . | nindent 4 }}
 data:
   nodes: |
-    {{ if eq (int .Values.typesense.replicas) 1 }}
+    {{- if eq (int .Values.typesense.replicas) 1 }}
     {{ include "typesense.fullname" . }}-0.{{ include "typesense.fullname" . }}-headless:8107:{{ .Values.typesense.port }}
-    {{ else }}
+    {{- else }}
     {{ include "typesense.fullname" . }}-0.{{ include "typesense.fullname" . }}-headless:8107:{{ .Values.typesense.port }},{{ include "typesense.fullname" . }}-1.{{ include "typesense.fullname" . }}-headless:8107:{{ .Values.typesense.port }},{{ include "typesense.fullname" . }}-2.{{ include "typesense.fullname" . }}-headless:8107:{{ .Values.typesense.port }}
-    {{ end }}
+    {{- end }}
