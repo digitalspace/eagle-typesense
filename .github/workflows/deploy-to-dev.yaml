@@ -142,7 +142,7 @@ jobs:
       - name: Verify deployment
         run: |
           echo "Verifying Typesense server..."
-          oc rollout status deployment/eagle-typesense -n ${{ env.OPENSHIFT_NAMESPACE_DEV }} --timeout=5m
+          oc rollout status statefulset/eagle-typesense -n ${{ env.OPENSHIFT_NAMESPACE_DEV }} --timeout=5m
           echo "✓ Typesense server healthy"
 
           echo ""
