@@ -1,4 +1,23 @@
-# eagle-typesense
+# eagle-typesense — RETIRED
+
+**This service is retired and this repository is archived. Nothing below is running.**
+
+Search for EPIC is served by [eagle-search](https://github.com/digitalspace/eagle-search), which
+puts the same data in Azure AI Search and adds document **content** search — searching the text
+inside PDFs, not just their titles.
+
+Retired on 2026-08-10, after both remaining deployments had served zero searches for 24 hours:
+
+- Helm releases uninstalled from `6cdc9e-dev` and `6cdc9e-test`.
+- `eao-nginx` no longer proxies `/api/public/typesense` or `/api/typesense`, and `TYPESENSE_ENABLED`
+  is out of the runtime config.
+- `eagle-api` no longer carries the proxy controller, the client, the scoped-search-key endpoint or
+  the `typesense` dependency. Its `/api/search` never used Typesense — it has always run the Mongo
+  aggregators — so removing all of it changed no behaviour.
+
+The rest of this README describes how the service worked, and is kept for that reason alone.
+
+---
 
 Typesense search engine and MongoDB sync service for the EPIC platform.
 
